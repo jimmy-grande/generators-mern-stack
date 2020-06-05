@@ -1,0 +1,15 @@
+{
+  "name": "generator-mern-stack",
+  "version": "0.1.0",
+  "description": "generator for mern stack with docker",
+  "main": "index.js",
+  "author": "Jimmy Grande",
+  "license": "MIT",
+  "files": [
+    "generators"
+  ],
+  "keywords": ["yeoman-generator", "mern", "mongodb", "express", "react", "nodejs", "fullstack", "docker"],
+  "dependencies": {
+    "yeoman-generator": "^4.10.1"
+  }
+}

@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  server:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    ports:
+      - 4000:4000
+    environment:
+      - ARTICLE_API=http://article-api
+      - EVENTSTORE_HTTP_ENDPOINT=http://eventstore:2113
+    volumes:
+      - ./api:/usr/app/
+      - /usr/app/node_modules
+
+  client:
+    build:
+      context: ./react-client
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - REACT_APP_GRAPHQL_API=http://api:4000
+    volumes:
+      - ./react-client:/usr/app/
+      - /usr/app/node_modules
+    links:
+      - api
+    depends_on:
+      - api
+    stdin_open: true # will crash the client if not set https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
+
+  database:
+    image: mongo
+    environment: 
+      - MONGO_INITDB_DATABASE=sample-db
+      - MONGO_INITDB_ROOT_USERNAME=my-user
+      - MONGO_INITDB_ROOT_PASSWORD=********
+    volumes:
+      - ./database/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./database:/data/db
+    ports: 
+      - 27017:27017
+      - 27018:27018
+      - 27019:27019
